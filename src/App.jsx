@@ -11,8 +11,8 @@ import Signup from '../src/pages/Signup'
 import Admin from '../src/pages/Admin'
 import NoMatch from '../src/pages/NoMatch'
 import Layout from '../src/components/Layout'
-import { AuthContext } from './context/auth'
-import PrivateRoute from './PrivateRoute'
+import { AuthContext, AuthProvider } from './context/auth'
+import RequireAuth from './RequireAuth'
 
 function App() {
   const router = createBrowserRouter(
@@ -23,18 +23,18 @@ function App() {
         <Route path="login" element={<Login/>}/>
         <Route path="signup" element={<Signup/>}/>
         <Route path="admin" element={
-            <PrivateRoute>
+            <RequireAuth redirectTo="/signup">
               <Admin/>
-            </PrivateRoute>
+            </RequireAuth> 
           }/>
         <Route path="*" element={<NoMatch/>}/>
       </Route>
     )
   )
   return (
-    <AuthContext.Provider value={false}>
+    <AuthProvider>
       <RouterProvider router={router}/>
-    </AuthContext.Provider>
+    </AuthProvider>
   )
 }
 
