@@ -1,8 +1,34 @@
 import React from 'react'
-import { Form, useNavigation, Link } from 'react-router-dom'
+import { 
+  Form, 
+  Link,
+  useNavigation, 
+  useActionData,
+  redirect
+} from 'react-router-dom'
+import useAuth from '../context/auth'
+import {login as loginService} from '../context/authService'
+
+export async function action({request}){
+  const formData =  await request.formData();
+  const email = formData.get("email")
+  const password = formData.get("password")
+  const pathname = 
+    new URL(request.url).searchParams.get("redirectTo") || "/admin"
+  try{
+    const data = await loginService({email,password})
+    const res = redirect("/admin")
+    return res
+  } catch(err){
+    return err
+  }
+}
+
 
 export default function Login() {
     const navigate = useNavigation()
+    const error = useActionData()
+
     const inputStyles = "block w-full appearance-none rounded-md border border-gray-200 bg-gray-50 px-3 py-2 text-gray-900 placeholder-gray-400 placeholder:text-sm focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-blue-500 sm:text-sm"
     const labelStyles = "mb-3 block text-sm font-medium text-gray-700"
 
@@ -15,7 +41,10 @@ export default function Login() {
               Don’t have an account?{" "} 
               <Link aria-label="Signup" to="/signup" className="font-medium text-blue-600 hover:underline">Sign up</Link>{" "}
               for free.</p>
-            <Form method="post" className="mt-8 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-2">
+              {error && <h3>{error.message}</h3>}
+            <Form 
+              method="post" 
+              className="mt-8 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-2">
               <div className="col-span-full">
                 <label htmlFor="email" className={labelStyles}>Email</label>
                 <input 

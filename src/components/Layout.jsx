@@ -3,7 +3,7 @@ import { Link, Outlet } from 'react-router-dom'
 import useAuth from '../context/auth';
 
 export default function Layout() {
-  const {isAuthenticated} = useAuth();
+  const {isAuthenticated, logout} = useAuth();
   const linkStyles ="inline-block rounded-lg px-2 py-1 text-md text-slate-700 hover:bg-slate-100 hover:text-slate-900"
   return (
     <>
@@ -19,12 +19,20 @@ export default function Layout() {
               </div>
               <div className='flex items-center gap-x-5 md:gap-x-8'>
                 {!isAuthenticated && 
-                <div className="hidden md:block">
-                  <Link to="/login"  className={linkStyles}>Sign In</Link>
-                </div>}
-                {!isAuthenticated && 
-                <Link to="/signup" className='group inline-flex items-center justify-center rounded-full py-2 px-4 text-sm font-semibold focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 bg-blue-600 text-white hover:text-slate-100 hover:bg-blue-500 active:bg-blue-800 active:text-blue-100 focus-visible:outline-blue-600'>Get started</Link>
+                <>
+                  <div className="hidden md:block">
+                    <Link to="/login"  className={linkStyles}>Sign In</Link>
+                  </div>
+                  <Link to="/signup" className='group inline-flex items-center justify-center rounded-full py-2 px-4 text-sm font-semibold focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 bg-blue-600 text-white hover:text-slate-100 hover:bg-blue-500 active:bg-blue-800 active:text-blue-100 focus-visible:outline-blue-600'>Get started</Link>
+                </>
                 }
+                {isAuthenticated && 
+                  <Link to="."  
+                    className={linkStyles}
+                    onClick={logout}
+                  >Log Out</Link>
+                }
+
                 </div>
             </nav>
           </div>
