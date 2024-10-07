@@ -1,5 +1,4 @@
 import React from 'react'
-import {login as loginService} from './authService'
 import { redirect } from 'react-router-dom';
 
 export const AuthContext = React.createContext(
@@ -18,14 +17,11 @@ export default function useAuth() {
 
 export function AuthProvider({ children }){
 
-  const [isAuthenticated, setAuthenticated] = React.useState(true);
+  const [isAuthenticated, setAuthenticated] = React.useState(false);
 
-  const login = async (credentials) => {
-    const result = await loginService(credentials); 
-    if (result.success) {
-      setAuthenticated(true);
-    }
-    return redirect('/admin');
+  const login = () => {
+    console.log('login')
+    setAuthenticated(true);
   }
 
   const logout = () => {

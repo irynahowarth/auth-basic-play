@@ -13,7 +13,6 @@ import NoMatch from '../src/pages/NoMatch'
 import Layout from '../src/components/Layout'
 import {AuthProvider } from './context/auth'
 import RequireAuth from './RequireAuth'
-import useAuth from './context/auth';
 
 function App() {
   const router = createBrowserRouter(

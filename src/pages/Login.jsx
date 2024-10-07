@@ -4,10 +4,10 @@ import {
   Link,
   useNavigation, 
   useActionData,
-  redirect
+  useNavigate
 } from 'react-router-dom'
 import useAuth from '../context/auth'
-import {login as loginService} from '../context/authService'
+import {loginService} from '../context/authService'
 
 export async function action({request}){
   const formData =  await request.formData();
@@ -17,8 +17,7 @@ export async function action({request}){
     new URL(request.url).searchParams.get("redirectTo") || "/admin"
   try{
     const data = await loginService({email,password})
-    const res = redirect("/admin")
-    return res
+    return data
   } catch(err){
     return err
   }
@@ -27,11 +26,19 @@ export async function action({request}){
 
 export default function Login() {
     const navigate = useNavigation()
-    const error = useActionData()
+    const nav = useNavigate()
+    const actionData = useActionData()
+    const {login} = useAuth()
 
     const inputStyles = "block w-full appearance-none rounded-md border border-gray-200 bg-gray-50 px-3 py-2 text-gray-900 placeholder-gray-400 placeholder:text-sm focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-blue-500 sm:text-sm"
     const labelStyles = "mb-3 block text-sm font-medium text-gray-700"
 
+    React.useEffect(()=>{
+      if(actionData && actionData.success){
+        login()
+        nav('/admin')
+      }
+    },[actionData])
   return (
     <div className="relative flex min-h-full shrink-0 justify-center md:px-12 lg:px-0">
       <div className="relative z-10 flex flex-1 flex-col bg-white px-4 py-10 shadow-2xl sm:justify-center md:flex-none md:px-28">
@@ -41,7 +48,7 @@ export default function Login() {
               Don’t have an account?{" "} 
               <Link aria-label="Signup" to="/signup" className="font-medium text-blue-600 hover:underline">Sign up</Link>{" "}
               for free.</p>
-              {error && <h3>{error.message}</h3>}
+              {actionData && <h3>{actionData.message}</h3>}
             <Form 
               method="post" 
               className="mt-8 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-2">
